@@ -34,7 +34,7 @@ response = requests.get(target)
 while True:
     if response.status_code == 200:
         w = Style(
-            color="green",
+            color="cyan",
             italic=True
         )
         while True:
@@ -52,7 +52,8 @@ while True:
                                 italic=True
                             )
                             console.print(f"{url} [+] found {r.status_code}" , style=u2, justify="center")
-                            break
+                            with open("/home/demo/Bureau/found", "w")as fil:
+                                fil.write(f"{url}: {r.status_code}" )
                         else:
                             uo = Style(
                                 color="red",
@@ -60,5 +61,15 @@ while True:
                                 italic=True
                             )
                             console.print(f"{url} [-] not found {r.status_code}", style=uo,justify="center")
+                            with open("/home/demo/Bureau/not_found", "w") as file:
+                                file.write(f"{url} : {r.status_code}")
+                break
+            break
+    else:
+        za = Style(
+            color = "red",
+            bolod = False,
+            italic = True
+        )
+        console.print("entre a valid Url  :", style=za, justify="left")
         
-
