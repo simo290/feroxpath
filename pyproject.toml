@@ -13,3 +13,6 @@ dependencies = [
     "requests",
     "pyfiglet"
 ]
+
+[tool.setuptools]
+py-modules = ["main", "vpn"]
