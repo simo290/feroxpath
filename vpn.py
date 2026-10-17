@@ -37,7 +37,7 @@ if path:
                         console.print("Your wireless card is in Managed mode. Please switch to monitor mode ", style=rm, justify="center")
                         res = Prompt.ask("Do you want to switch to monitor mode? (y/n)", style=rs)
                         if res.lower() == "y":
-                            subprocess.run(['sudo', 'airmon-ng', 'star', 'wlan0'], check=True)
+                            subprocess.run(['sudo', 'airmon-ng', 'start', 'wlan0'], check=True)
                             root = Prompt.ask("PLeas Enter your root password to continue:")
                             subprocess.run([root], check=True)
                         elif res.lower() == "n":
@@ -49,6 +49,8 @@ if path:
                                  subprocess.run(['sudo', 'airmon-ng', 'star', 'wlan0'], check=True)
                             root = Prompt.ask("PLeas Enter your root password to continue:")
                             subprocess.run([root], check=True)
-                            else :
+                            else:
                                 console.print("Invalid value")
+                        else:
+                            console.print("Invalid value")
                 except subprocess.CalledProcessError as e:
