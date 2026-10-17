@@ -3,7 +3,7 @@ import subprocess
 import rich
 import shutil
 from rich.console import Console 
-from rich.style import style
+from rich.style import Style
 from rich.prompt import Prompt
 system = platform.system()
 console = Console()
