@@ -53,4 +53,4 @@ if path:
                                 console.print("Invalid value")
                         else:
                             console.print("Invalid value")
-                except subprocess.CalledProcessError as e:
+        except subprocess.CalledProcessError as e:
