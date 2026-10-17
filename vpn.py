@@ -1,57 +1,77 @@
+
 import platform
 import subprocess
-import rich
 import shutil
-from rich.console import Console 
+
+from rich.console import Console
 from rich.style import Style
 from rich.prompt import Prompt
+
 system = platform.system()
 console = Console()
-style = rich.Style()
+
+sh = Style(color="green", bold=True, italic=True)
+rm = Style(color="red", bold=True, italic=True)
+rs = Style(color="cyan", bold=True, italic=True)
+
 path = shutil.which("aircrack-ng")
+
 if path:
-    sh = style(
-        color="green",
-        bold=True,
-        italic=True
+    console.print(
+        f"aircrack-ng is installed at: {path}",
+        style=sh,
+        justify="center"
     )
-    rm = style(
-        color="red",
-        bold = True,
-        italic = True
-    )
-    rs = style(
-        color="cyan",
-        bold = True,
-        italic =True
-    )
-    console.print(f"aircrack-ng is installed at: {path}", style=sh, justify="center")
-    if system == "linux":
+
+    if system == "Linux":
         try:
-            iw = subprocess.run(['iwconfig'], check=True)
-            with open("iwconfig.txt", "w") as f:
+            iw = subprocess.run(
+                ["iwconfig"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+
+            with open("iwconfig.txt", "w", encoding="utf-8") as f:
                 f.write(iw.stdout)
-                with open("iwconfig.txt", "r") as f :
-                    con=f.read()
-                    if "Mode:Managed" in con:
-                        console.print("Your wireless card is in Managed mode. Please switch to monitor mode ", style=rm, justify="center")
-                        res = Prompt.ask("Do you want to switch to monitor mode? (y/n)", style=rs)
-                        if res.lower() == "y":
-                            subprocess.run(['sudo', 'airmon-ng', 'start', 'wlan0'], check=True)
-                            root = Prompt.ask("PLeas Enter your root password to continue:")
-                            subprocess.run([root], check=True)
-                        elif res.lower() == "n":
-                            rs1 = Prompt.ask("you can't use this program without monitor mode. you want exit (y/n): ") 
-                            if rs1.lower() == "y":
-                                console.print("Exiting the program...", style = rm, justify = center)
-                                exit()
-                            elif rs1.lower() == "n":
-                                 subprocess.run(['sudo', 'airmon-ng', 'star', 'wlan0'], check=True)
-                                 root = Prompt.ask("PLeas Enter your root password to continue:")
-                                 subprocess.run([root], check=True)
-                            else:
-                                console.print("Invalid value")
-                        else:
-                            console.print("Invalid value")
-        except subprocess.CalledProcessError as e:
-            console.print("try again")
+
+            con = iw.stdout
+
+            if "Mode:Managed" in con:
+                console.print(
+                    "Your wireless card is in Managed mode.",
+                    style=rm,
+                    justify="center"
+                )
+
+                res = Prompt.ask(
+                    "Do you want to switch to monitor mode? (y/n)",
+                    choices=["y", "n"],
+                    style=rs
+                )
+
+                if res == "y":
+                    console.print(
+                        "Use the correct wireless interface and "
+                        "authorize any system changes through sudo."
+                    )
+                else:
+                    console.print("Exiting the program.", style=rm)
+
+            else:
+                console.print(
+                    "Managed mode was not detected.",
+                    style=sh
+                )
+
+        except FileNotFoundError:
+            console.print("iwconfig was not found.")
+
+        except subprocess.CalledProcessError:
+            console.print("Could not run iwconfig. Try again.")
+
+else:
+    console.print(
+        "aircrack-ng is not installed or not in PATH.",
+        style=rm
+    )
