@@ -42,13 +42,13 @@ if path:
                             subprocess.run([root], check=True)
                         elif res.lower() == "n":
                             rs1 = Prompt.ask("you can't use this program without monitor mode. you want exit (y/n): ") 
-                            if res1.lower() == "y":
+                            if rs1.lower() == "y":
                                 console.print("Exiting the program...", style = rm, justify = center)
                                 exit()
                             elif rs1.lower() == "n":
                                  subprocess.run(['sudo', 'airmon-ng', 'star', 'wlan0'], check=True)
-                            root = Prompt.ask("PLeas Enter your root password to continue:")
-                            subprocess.run([root], check=True)
+                                 root = Prompt.ask("PLeas Enter your root password to continue:")
+                                 subprocess.run([root], check=True)
                             else:
                                 console.print("Invalid value")
                         else:
