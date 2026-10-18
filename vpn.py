@@ -2,6 +2,7 @@
 import platform
 import subprocess
 import shutil
+import os
 
 from rich.console import Console
 from rich.style import Style
@@ -45,16 +46,28 @@ if path:
                 )
 
                 res = Prompt.ask(
-                    "Do you want to switch to monitor mode? (y/n)",
+                    "[cyan bold italic]Do you want to switch to monitor mode?[/]",
                     choices=["y", "n"],
-                    style=rs
+                    
                 )
 
                 if res == "y":
                     console.print(
-                        "Use the correct wireless interface and "
-                        "authorize any system changes through sudo."
+                        "you can't use this program without root",
+                        style = rm,
+                        justify = "left"
                     )
+                    if os.geteuid() == 0:
+                        console.print(" you're root, you can continue.", style = sh, justify = "center")
+                        subprocess.run(['airmon-ng', 'start', 'wlan0'])
+                    else :
+                        console.print("You need to run it as root to continue.", style = rm, justify= "center")
+                        subprocess.run(
+                            ['sudo', 'airmon-ng', 'start', 'wlan0'],
+                            check = True,
+                            capture_output = True,
+                            text = True
+                            )
                 else:
                     console.print("Exiting the program.", style=rm)
 
