@@ -27,7 +27,7 @@ if path:
     if system == "Linux":
         try:
             iw = subprocess.run(
-                ["iwconfig"],
+                ['iwconfig'],
                 capture_output=True,
                 text=True,
                 check=True
@@ -47,10 +47,8 @@ if path:
 
                 res = Prompt.ask(
                     "[cyan bold italic]Do you want to switch to monitor mode?[/]",
-                    choices=["y", "n"],
-                    
+                    choices=["y", "n"],    
                 )
-
                 if res == "y":
                     console.print(
                         "you can't use this program without root",
@@ -60,6 +58,7 @@ if path:
                     if os.geteuid() == 0:
                         console.print(" you're root, you can continue.", style = sh, justify = "center")
                         subprocess.run(['airmon-ng', 'start', 'wlan0'])
+
                     else :
                         console.print("You need to run it as root to continue.", style = rm, justify= "center")
                         subprocess.run(
@@ -68,9 +67,30 @@ if path:
                             capture_output = True,
                             text = True
                             )
-                else:
+                        dr = 10
+                        try:
+                            ai = subprocess.run(
+                                ['sudo', 'timeout',f'{dr}s', 'airodump-ng', 'wlan0mon'],
+                                capture_output = True,
+                                check = False,
+                                text = True
+                            )
+                            console.print("finish")
+                            with open("airodump.cap", "w") as a:
+                                a.write(ai.returncode)
+                        except KeyboardInterrupt:
+                            console.print(
+                                "Programme interrputed by user",
+                                style = rm
+                            )
+                elif res.lower() == "n":
                     console.print("Exiting the program.", style=rm)
-
+                    exit()
+                else:
+                    console.print(
+                        "Please select one of the available options", 
+                        style = rm
+                        )
             else:
                 console.print(
                     "Managed mode was not detected.",
@@ -80,8 +100,23 @@ if path:
         except FileNotFoundError:
             console.print("iwconfig was not found.")
 
-        except subprocess.CalledProcessError:
-            console.print("Could not run iwconfig. Try again.")
+        except subprocess.CalledProcessError as e:
+            console.print(
+                f"Command file : {e.cmd}",
+                style = rm
+            )
+            console.print(
+                f"Error: {e.stderr}",
+                style = rm
+            )
+            console.print(
+                f"Exite code : {e.returncode}",
+                style = rm
+            )
+            console.print(
+                f"Output : {e.stdout}",
+                style = rm
+            )
 
 else:
     console.print(
