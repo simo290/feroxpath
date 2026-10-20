@@ -11,8 +11,7 @@ requires-python = ">=3.9"
 dependencies = [
     "rich",
     "requests",
-    "pyfiglet",
-    "os"
+    "pyfiglet"
 ]
 
 [tool.setuptools]
